@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # 1. WebサーバーとPHP（Dockerfileで作成したもの）
+  web:
+    build: .
+    ports:
+      - "8080:80" # ホストの8080ポートをコンテナの80ポートにマッピング
+    volumes:
+      - ./src:/var/www/html # ホストのsrcフォルダをWebルートにマウント
+    depends_on:
+      - db
+
+  # 2. データベース（MySQL）
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: user_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
