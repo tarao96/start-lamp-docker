@@ -15,11 +15,17 @@ RUN apt-get update && \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 2. Webコンテンツのディレクトリ設定
-# 公式イメージは/var/www/htmlがデフォルトです。
+# /var/www/htmlをドキュメントルートとして使用（デフォルト設定）
 WORKDIR /var/www/html
 
-# 3. Apacheのmod_rewriteを有効化
+# 3. Apacheの設定を変更してpublicディレクトリをドキュメントルートに設定
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# 4. .htaccessファイルを有効にするためAllowOverrideを設定
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+# 5. Apacheのmod_rewriteを有効化
 RUN a2enmod rewrite
 
-# 4. ポート80はデフォルトで公開されています。
+# 6. ポート80はデフォルトで公開されています。
 EXPOSE 80
