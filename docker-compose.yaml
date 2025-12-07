@@ -24,5 +24,14 @@ services:
     ports:
       - "3306:3306" # ホストの3306ポートをコンテナの3306ポートにマッピング
 
+  # 3. キャッシュ（Redis）
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379" # ホストの6379ポートをコンテナの6379ポートにマッピング
+    volumes:
+      - redis_data:/data
+
 volumes:
   db_data:
+  redis_data:
